@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
 import '../models/vimeo_models.dart';
 
 String podErrorString(String val) {
@@ -11,7 +12,7 @@ String podErrorString(String val) {
 }
 
 class VideoApis {
-  static Future<List<VideoQalityUrls>?> getVimeoVideoQualityUrls(
+  static Future<List<VideoQualityUrls>?> getVimeoVideoQualityUrls(
     String videoId,
   ) async {
     try {
@@ -22,7 +23,7 @@ class VideoApis {
           jsonDecode(response.body)['request']['files']['progressive'];
       return List.generate(
         jsonData.length,
-        (index) => VideoQalityUrls(
+        (index) => VideoQualityUrls(
           quality: int.parse(
             (jsonData[index]['quality'] as String?)?.split('p').first ?? '0',
           ),
@@ -42,7 +43,7 @@ class VideoApis {
     }
   }
 
-  static Future<List<VideoQalityUrls>?> getVimeoPrivateVideoQualityUrls(
+  static Future<List<VideoQualityUrls>?> getVimeoPrivateVideoQualityUrls(
     String videoId,
     Map<String, String> httpHeader,
   ) async {
@@ -53,13 +54,13 @@ class VideoApis {
       );
       final jsonData = jsonDecode(response.body)['files'];
 
-      final List<VideoQalityUrls> list = [];
+      final List<VideoQualityUrls> list = [];
       for (int i = 0; i < jsonData.length; i++) {
         final String quality =
             (jsonData[i]['rendition'] as String?)?.split('p').first ?? '0';
         final int? number = int.tryParse(quality);
         if (number != null && number != 0) {
-          list.add(VideoQalityUrls(quality: number, url: jsonData[i]['link']));
+          list.add(VideoQualityUrls(quality: number, url: jsonData[i]['link']));
         }
       }
       return list;
@@ -76,19 +77,19 @@ class VideoApis {
     }
   }
 
-  static Future<List<VideoQalityUrls>?> getYoutubeVideoQualityUrls(
+  static Future<List<VideoQualityUrls>?> getYoutubeVideoQualityUrls(
     String youtubeIdOrUrl,
     bool live,
   ) async {
     try {
       final yt = YoutubeExplode();
-      final urls = <VideoQalityUrls>[];
+      final urls = <VideoQualityUrls>[];
       if (live) {
         final url = await yt.videos.streamsClient.getHttpLiveStreamUrl(
           VideoId(youtubeIdOrUrl),
         );
         urls.add(
-          VideoQalityUrls(
+          VideoQualityUrls(
             quality: 360,
             url: url,
           ),
@@ -98,7 +99,7 @@ class VideoApis {
             await yt.videos.streamsClient.getManifest(youtubeIdOrUrl);
         urls.addAll(
           manifest.muxed.map(
-            (element) => VideoQalityUrls(
+            (element) => VideoQualityUrls(
               quality: int.parse(element.qualityLabel.split('p')[0]),
               url: element.url.toString(),
             ),

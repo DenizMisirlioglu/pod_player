@@ -19,8 +19,8 @@ part 'pod_video_controller.dart';
 part 'pod_video_quality_controller.dart';
 
 class PodGetXVideoController extends _PodGesturesController {
-  ///main videoplayer controller
-  VideoPlayerController? get videoCtr => _videoCtr;
+  ///main video player controller
+  CachedVideoPlayerController? get videoCtr => _videoCtr;
 
   ///podVideoPlayer state notifier
   PodVideoState get podVideoState => _podVideoState;
@@ -60,7 +60,7 @@ class PodGetXVideoController extends _PodGesturesController {
       await _videoCtr?.initialize();
       _videoDuration = _videoCtr?.value.duration ?? Duration.zero;
       await setLooping(isLooping);
-      _videoCtr?.addListener(videoListner);
+      _videoCtr?.addListener(videoListener);
       addListenerId('podVideoState', podStateListner);
 
       checkAutoPlayVideo();
@@ -85,7 +85,7 @@ class PodGetXVideoController extends _PodGesturesController {
       case PodVideoPlayerType.network:
 
         ///
-        _videoCtr = VideoPlayerController.network(
+        _videoCtr = CachedVideoPlayerController.network(
           playVideoFrom.dataSource!,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
@@ -101,7 +101,7 @@ class PodGetXVideoController extends _PodGesturesController {
         );
 
         ///
-        _videoCtr = VideoPlayerController.network(
+        _videoCtr = CachedVideoPlayerController.network(
           _url,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
@@ -122,7 +122,7 @@ class PodGetXVideoController extends _PodGesturesController {
         );
 
         ///
-        _videoCtr = VideoPlayerController.network(
+        _videoCtr = CachedVideoPlayerController.network(
           _url,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
@@ -139,7 +139,7 @@ class PodGetXVideoController extends _PodGesturesController {
           videoUrls: vimeoOrVideoUrls,
         );
 
-        _videoCtr = VideoPlayerController.network(
+        _videoCtr = CachedVideoPlayerController.network(
           _url,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
@@ -152,7 +152,7 @@ class PodGetXVideoController extends _PodGesturesController {
       case PodVideoPlayerType.asset:
 
         ///
-        _videoCtr = VideoPlayerController.asset(
+        _videoCtr = CachedVideoPlayerController.asset(
           playVideoFrom.dataSource!,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           package: playVideoFrom.package,
@@ -167,7 +167,7 @@ class PodGetXVideoController extends _PodGesturesController {
         }
 
         ///
-        _videoCtr = VideoPlayerController.file(
+        _videoCtr = CachedVideoPlayerController.file(
           playVideoFrom.file!,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
@@ -184,7 +184,7 @@ class PodGetXVideoController extends _PodGesturesController {
           videoUrls: vimeoOrVideoUrls,
         );
 
-        _videoCtr = VideoPlayerController.network(
+        _videoCtr = CachedVideoPlayerController.network(
           _url,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
@@ -287,16 +287,16 @@ class PodGetXVideoController extends _PodGesturesController {
     required PlayVideoFrom playVideoFrom,
     required PodPlayerConfig playerConfig,
   }) async {
-    _videoCtr?.removeListener(videoListner);
+    _videoCtr?.removeListener(videoListener);
     podVideoStateChanger(PodVideoState.paused);
     podVideoStateChanger(PodVideoState.loading);
-    keyboardFocusWeb?.removeListener(keyboadListner);
+    keyboardFocusWeb?.removeListener(keyboardListener);
     removeListenerId('podVideoState', podStateListner);
     _isWebAutoPlayDone = false;
     vimeoOrVideoUrls = [];
     config(playVideoFrom: playVideoFrom, playerConfig: playerConfig);
     keyboardFocusWeb?.requestFocus();
-    keyboardFocusWeb?.addListener(keyboadListner);
+    keyboardFocusWeb?.addListener(keyboardListener);
     await videoInit();
   }
 }

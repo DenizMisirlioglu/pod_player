@@ -33,7 +33,7 @@ class _VideoOverlays extends StatelessWidget {
             currentVideoPlaybackSpeed: _podCtr.currentPaybackSpeed,
             videoPlayBackSpeeds: _podCtr.videoPlaybackSpeeds,
             videoPlayerType: _podCtr.videoPlayerType,
-            podProgresssBar: _progressBar,
+            podProgressBar: _progressBar,
           );
 
           /// Returns the custom overlay, otherwise returns the default

@@ -104,7 +104,7 @@ class PodPlayerController {
 
   PodVideoState get videoState => _ctr.podVideoState;
 
-  VideoPlayerValue? get videoPlayerValue => _ctr.videoCtr?.value;
+  CachedVideoPlayerValue? get videoPlayerValue => _ctr.videoCtr?.value;
 
   PodVideoPlayerType get videoPlayerType => _ctr.videoPlayerType;
 
@@ -163,7 +163,7 @@ class PodPlayerController {
   ///Dispose pod video player controller
   void dispose() {
     _isCtrInitialised = false;
-    _ctr.videoCtr?.removeListener(_ctr.videoListner);
+    _ctr.videoCtr?.removeListener(_ctr.videoListener);
     _ctr.videoCtr?.dispose();
     _ctr.removeListenerId('podVideoState', _ctr.podStateListner);
     if (podPlayerConfig.wakelockEnabled) Wakelock.disable();
@@ -249,14 +249,14 @@ class PodPlayerController {
     _ctr.onVimeoVideoQualityChanged = callback;
   }
 
-  static Future<List<VideoQalityUrls>?> getYoutubeUrls(
+  static Future<List<VideoQualityUrls>?> getYoutubeUrls(
     String youtubeIdOrUrl, {
     bool live = false,
   }) {
     return VideoApis.getYoutubeVideoQualityUrls(youtubeIdOrUrl, live);
   }
 
-  static Future<List<VideoQalityUrls>?> getVimeoUrls(String videoId) {
+  static Future<List<VideoQualityUrls>?> getVimeoUrls(String videoId) {
     return VideoApis.getVimeoVideoQualityUrls(videoId);
   }
 

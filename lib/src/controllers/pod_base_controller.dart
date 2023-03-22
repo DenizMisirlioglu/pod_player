@@ -3,7 +3,7 @@ part of 'pod_getx_video_controller.dart';
 
 class _PodBaseController extends GetxController {
   ///main video controller
-  VideoPlayerController? _videoCtr;
+  CachedVideoPlayerController? _videoCtr;
 
   ///
   late PodVideoPlayerType _videoPlayerType;
@@ -39,21 +39,21 @@ class _PodBaseController extends GetxController {
 
   ///**listners
 
-  Future<void> videoListner() async {
+  Future<void> videoListener() async {
     if (!_videoCtr!.value.isInitialized) {
       await _videoCtr!.initialize();
     }
     if (_videoCtr!.value.isInitialized) {
-      _listneToVideoState();
+      _listenToVideoState();
       _listneToVideoPosition();
-      _listneToVolume();
+      _listenToVolume();
       if (kIsWeb && autoPlay && isMute && !_isWebAutoPlayDone) _webAutoPlay();
     }
   }
 
   void _webAutoPlay() => _videoCtr!.setVolume(1);
 
-  void _listneToVolume() {
+  void _listenToVolume() {
     if (_videoCtr!.value.volume == 0) {
       if (!isMute) {
         isMute = true;
@@ -69,7 +69,7 @@ class _PodBaseController extends GetxController {
     }
   }
 
-  void _listneToVideoState() {
+  void _listenToVideoState() {
     podVideoStateChanger(
       _videoCtr!.value.isBuffering || !_videoCtr!.value.isInitialized
           ? PodVideoState.loading
@@ -105,21 +105,11 @@ class _PodBaseController extends GetxController {
     }
   }
 
-  void keyboadListner() {
+  void keyboardListener() {
     if (keyboardFocusWeb != null && !keyboardFocusWeb!.hasFocus) {
       if (keyboardFocusWeb!.canRequestFocus) {
         keyboardFocusWeb!.requestFocus();
       }
     }
   }
-
-  // void keyboadFullScreenListner() {
-  //   print(keyboardFocusOnFullScreen?.hasFocus);
-  //   if (keyboardFocusOnFullScreen != null &&
-  //       !keyboardFocusOnFullScreen!.hasFocus) {
-  //     if (keyboardFocusOnFullScreen!.canRequestFocus) {
-  //       keyboardFocusOnFullScreen!.requestFocus();
-  //     }
-  //   }
-  // }
 }

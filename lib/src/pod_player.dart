@@ -14,21 +14,13 @@ import 'utils/logger.dart';
 import 'widgets/material_icon_button.dart';
 
 part 'widgets/animated_play_pause_icon.dart';
-
 part 'widgets/core/overlays/mobile_bottomsheet.dart';
-
 part 'widgets/core/overlays/mobile_overlay.dart';
-
 part 'widgets/core/overlays/overlays.dart';
-
 part 'widgets/core/overlays/web_dropdown_menu.dart';
-
 part 'widgets/core/overlays/web_overlay.dart';
-
 part 'widgets/core/pod_core_player.dart';
-
 part 'widgets/core/video_gesture_detector.dart';
-
 part 'widgets/full_screen_view.dart';
 
 class PodVideoPlayer extends StatefulWidget {
@@ -41,6 +33,7 @@ class PodVideoPlayer extends StatefulWidget {
   final PodProgressBarConfig podProgressBarConfig;
   final PodPlayerLabels podPlayerLabels;
   final Widget Function(OverLayOptions options)? overlayBuilder;
+  final OverlayStyle? overlayStyle;
   final Widget Function()? onVideoError;
   final Widget? videoTitle;
   final Color? backgroundColor;
@@ -65,6 +58,7 @@ class PodVideoPlayer extends StatefulWidget {
     this.podProgressBarConfig = const PodProgressBarConfig(),
     this.podPlayerLabels = const PodPlayerLabels(),
     this.overlayBuilder,
+    this.overlayStyle,
     this.videoTitle,
     this.matchVideoAspectRatioToFrame = false,
     this.matchFrameAspectRatioToVideo = false,
@@ -88,6 +82,7 @@ class PodVideoPlayer extends StatefulWidget {
       ..alwaysShowProgressBar = alwaysShowProgressBar
       ..podProgressBarConfig = podProgressBarConfig
       ..overlayBuilder = overlayBuilder
+      ..overlayStyle = overlayStyle
       ..videoTitle = videoTitle
       ..onToggleFullScreen = onToggleFullScreen
       ..onLoading = onLoading
@@ -118,7 +113,7 @@ class _PodVideoPlayerState extends State<PodVideoPlayer>
     if (kIsWeb) {
       if (widget.controller.podPlayerConfig.forcedVideoFocus) {
         _podCtr.keyboardFocusWeb = FocusNode();
-        _podCtr.keyboardFocusWeb?.addListener(_podCtr.keyboadListner);
+        _podCtr.keyboardFocusWeb?.addListener(_podCtr.keyboardListener);
       }
       //to disable mouse right click
       _html.document.onContextMenu.listen((event) => event.preventDefault());
@@ -130,7 +125,7 @@ class _PodVideoPlayerState extends State<PodVideoPlayer>
     super.dispose();
 
     ///Checking if the video was playing when this widget is disposed
-    if (_podCtr.isvideoPlaying) {
+    if (_podCtr.isVideoPlaying) {
       _podCtr.wasVideoPlayingOnUiDispose = true;
     } else {
       _podCtr.wasVideoPlayingOnUiDispose = false;
@@ -139,10 +134,9 @@ class _PodVideoPlayerState extends State<PodVideoPlayer>
       ..isVideoUiBinded = false
       ..podVideoStateChanger(PodVideoState.paused, updateUi: false);
     if (kIsWeb) {
-      _podCtr.keyboardFocusWeb?.removeListener(_podCtr.keyboadListner);
+      _podCtr.keyboardFocusWeb?.removeListener(_podCtr.keyboardListener);
     }
-    // _podCtr.keyboardFocus?.unfocus();
-    // _podCtr.keyboardFocusOnFullScreen?.unfocus();
+
     _podCtr.hoverOverlayTimer?.cancel();
     _podCtr.showOverlayTimer?.cancel();
     _podCtr.showOverlayTimer1?.cancel();
@@ -151,8 +145,7 @@ class _PodVideoPlayerState extends State<PodVideoPlayer>
     podLog('local PodVideoPlayer disposed');
   }
 
-  ///
-  double _frameAspectRatio = 16 / 9;
+  final double _frameAspectRatio = 16 / 9;
 
   @override
   Widget build(BuildContext context) {
@@ -182,9 +175,6 @@ class _PodVideoPlayerState extends State<PodVideoPlayer>
     return GetBuilder<PodGetXVideoController>(
       tag: widget.controller.getTag,
       builder: (_) {
-        _frameAspectRatio = widget.matchFrameAspectRatioToVideo
-            ? _podCtr.videoCtr?.value.aspectRatio ?? widget.frameAspectRatio
-            : widget.frameAspectRatio;
         return Center(
           child: ColoredBox(
             color: widget.backgroundColor ?? Colors.black,
@@ -197,8 +187,8 @@ class _PodVideoPlayerState extends State<PodVideoPlayer>
                   return widget.onVideoError?.call() ?? _videoErrorWidget;
                 }
 
-                return AspectRatio(
-                  aspectRatio: _frameAspectRatio,
+                return Padding(
+                  padding: const EdgeInsets.all(8),
                   child: _podCtr.videoCtr?.value.isInitialized ?? false
                       ? _buildPlayer()
                       : Center(child: circularProgressIndicator),

@@ -5,7 +5,7 @@ class _PodVideoQualityController extends _PodVideoController {
   int? vimeoPlayingVideoQuality;
 
   ///vimeo all quality urls
-  List<VideoQalityUrls> vimeoOrVideoUrls = [];
+  List<VideoQualityUrls> vimeoOrVideoUrls = [];
   late String _videoQualityUrl;
 
   ///invokes callback from external controller
@@ -43,7 +43,7 @@ class _PodVideoQualityController extends _PodVideoController {
   }
 
   void sortQualityVideoUrls(
-    List<VideoQalityUrls>? urls,
+    List<VideoQualityUrls>? urls,
   ) {
     final _urls = urls;
 
@@ -63,7 +63,7 @@ class _PodVideoQualityController extends _PodVideoController {
   }
 
   ///get vimeo quality `ex: 1080p` url
-  VideoQalityUrls getQualityUrl(int quality) {
+  VideoQualityUrls getQualityUrl(int quality) {
     return vimeoOrVideoUrls.firstWhere(
       (element) => element.quality == quality,
       orElse: () => vimeoOrVideoUrls.first,
@@ -72,7 +72,7 @@ class _PodVideoQualityController extends _PodVideoController {
 
   Future<String> getUrlFromVideoQualityUrls({
     required List<int> qualityList,
-    required List<VideoQalityUrls> videoUrls,
+    required List<VideoQualityUrls> videoUrls,
   }) async {
     sortQualityVideoUrls(videoUrls);
     if (vimeoOrVideoUrls.isEmpty) {
@@ -80,7 +80,7 @@ class _PodVideoQualityController extends _PodVideoController {
     }
 
     final fallback = vimeoOrVideoUrls[0];
-    VideoQalityUrls? urlWithQuality;
+    VideoQualityUrls? urlWithQuality;
     for (final quality in qualityList) {
       urlWithQuality = vimeoOrVideoUrls.firstWhere(
         (url) => url.quality == quality,
@@ -98,7 +98,7 @@ class _PodVideoQualityController extends _PodVideoController {
     return _videoQualityUrl;
   }
 
-  Future<List<VideoQalityUrls>> getVideoQualityUrlsFromYoutube(
+  Future<List<VideoQualityUrls>> getVideoQualityUrlsFromYoutube(
     String youtubeIdOrUrl,
     bool live,
   ) async {
@@ -117,14 +117,14 @@ class _PodVideoQualityController extends _PodVideoController {
           .url;
       podLog(_videoQualityUrl);
       vimeoPlayingVideoQuality = quality;
-      _videoCtr?.removeListener(videoListner);
+      _videoCtr?.removeListener(videoListener);
       podVideoStateChanger(PodVideoState.paused);
       podVideoStateChanger(PodVideoState.loading);
       playingVideoUrl = _videoQualityUrl;
-      _videoCtr = VideoPlayerController.network(_videoQualityUrl);
+      _videoCtr = CachedVideoPlayerController.network(_videoQualityUrl);
       await _videoCtr?.initialize();
       _videoDuration = _videoCtr?.value.duration ?? Duration.zero;
-      _videoCtr?.addListener(videoListner);
+      _videoCtr?.addListener(videoListener);
       await _videoCtr?.seekTo(_videoPosition);
       setVideoPlayBack(_currentPaybackSpeed);
       podVideoStateChanger(PodVideoState.playing);

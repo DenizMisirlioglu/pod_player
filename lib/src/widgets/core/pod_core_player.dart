@@ -1,7 +1,7 @@
 part of 'package:pod_player/src/pod_player.dart';
 
 class _PodCoreVideoPlayer extends StatelessWidget {
-  final VideoPlayerController videoPlayerCtr;
+  final CachedVideoPlayerController videoPlayerCtr;
   final double videoAspectRatio;
   final String tag;
 
@@ -33,7 +33,7 @@ class _PodCoreVideoPlayer extends StatelessWidget {
               Center(
                 child: AspectRatio(
                   aspectRatio: videoAspectRatio,
-                  child: VideoPlayer(videoPlayerCtr),
+                  child: CachedVideoPlayer(videoPlayerCtr),
                 ),
               ),
               GetBuilder<PodGetXVideoController>(

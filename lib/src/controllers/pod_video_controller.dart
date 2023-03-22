@@ -7,7 +7,7 @@ class _PodVideoController extends _PodUiController {
   bool isOverlayVisible = true;
   bool isLooping = false;
   bool isFullScreen = false;
-  bool isvideoPlaying = false;
+  bool isVideoPlaying = false;
 
   List<String> videoPlaybackSpeeds = [
     '0.25x',
@@ -38,7 +38,6 @@ class _PodVideoController extends _PodUiController {
     await seekTo(_videoCtr!.value.position - videoSeekDuration);
   }
 
-  ///mute
   /// Toggle mute.
   Future<void> toggleMute() async {
     isMute = !isMute;
@@ -51,23 +50,18 @@ class _PodVideoController extends _PodUiController {
 
   Future<void> mute() async {
     await setVolume(0);
-    update(['volume']);
-    update(['update-all']);
   }
 
   Future<void> unMute() async {
     await setVolume(1);
-    update(['volume']);
-    update(['update-all']);
   }
 
-// Set volume between 0.0 - 1.0,
   /// 0.0 is mute and 1.0 max volume.
   Future<void> setVolume(
     double volume,
   ) async {
     await _videoCtr?.setVolume(volume);
-    if (volume <= 0) {
+    if (volume == 0) {
       isMute = true;
     } else {
       isMute = false;
@@ -76,10 +70,10 @@ class _PodVideoController extends _PodUiController {
     update(['update-all']);
   }
 
-  ///*controll play pause
+  ///*control play pause
   Future<void> playVideo(bool val) async {
-    isvideoPlaying = val;
-    if (isvideoPlaying) {
+    isVideoPlaying = val;
+    if (isVideoPlaying) {
       isShowOverlay(true);
       // ignore: unawaited_futures
       _videoCtr?.play();
@@ -93,9 +87,9 @@ class _PodVideoController extends _PodUiController {
 
   ///toogle play pause
   void togglePlayPauseVideo() {
-    isvideoPlaying = !isvideoPlaying;
+    isVideoPlaying = !isVideoPlaying;
     podVideoStateChanger(
-      isvideoPlaying ? PodVideoState.playing : PodVideoState.paused,
+      isVideoPlaying ? PodVideoState.playing : PodVideoState.paused,
     );
   }
 

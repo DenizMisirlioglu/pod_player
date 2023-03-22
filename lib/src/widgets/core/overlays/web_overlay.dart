@@ -98,7 +98,7 @@ class _WebOverlayBottomControlles extends StatelessWidget {
                           tag: tag,
                           id: 'volume',
                           builder: (_podCtr) => MaterialIconButton(
-                            toolTipMesg: _podCtr.isMute
+                            toolTipMsg: _podCtr.isMute
                                 ? _podCtr.podPlayerLabels.unmute ??
                                     'Unmute${kIsWeb ? ' (m)' : ''}'
                                 : _podCtr.podPlayerLabels.mute ??
@@ -151,7 +151,7 @@ class _WebOverlayBottomControlles extends StatelessWidget {
                       children: [
                         _WebSettingsDropdown(tag: tag),
                         MaterialIconButton(
-                          toolTipMesg: _podCtr.isFullScreen
+                          toolTipMsg: _podCtr.isFullScreen
                               ? _podCtr.podPlayerLabels.exitFullScreen ??
                                   'Exit full screen${kIsWeb ? ' (f)' : ''}'
                               : _podCtr.podPlayerLabels.fullscreen ??

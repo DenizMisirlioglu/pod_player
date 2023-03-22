@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../pod_player.dart';
+
 typedef GetProgressBarBackgroundPaint = Paint Function({
   double? width,
   double? height,
@@ -87,21 +89,21 @@ class PodProgressBarConfig {
   /// Radius to curve the ends of the bar.
   final double curveRadius;
 
-  PodProgressBarConfig copyWith({
-    Color? playingBarColor,
-    Color? bufferedBarColor,
-    Color? circleHandlerColor,
-    bool? alwaysVisibleCircleHandler,
-    Color? backgroundColor,
-    GetProgressBarPlayedPaint? getPlayedPaint,
-    GetProgressBarBufferedPaint? getBufferedPaint,
-    GetProgressBarHandlePaint? getCircleHandlerPaint,
-    GetProgressBarBackgroundPaint? getBackgroundPaint,
-    double? height,
-    EdgeInsetsGeometry? padding,
-    double? circleHandlerRadius,
-    double? curveRadius,
-  }) {
+  PodProgressBarConfig copyWith(
+      {Color? playingBarColor,
+      Color? bufferedBarColor,
+      Color? circleHandlerColor,
+      bool? alwaysVisibleCircleHandler,
+      Color? backgroundColor,
+      GetProgressBarPlayedPaint? getPlayedPaint,
+      GetProgressBarBufferedPaint? getBufferedPaint,
+      GetProgressBarHandlePaint? getCircleHandlerPaint,
+      GetProgressBarBackgroundPaint? getBackgroundPaint,
+      double? height,
+      EdgeInsetsGeometry? padding,
+      double? circleHandlerRadius,
+      double? curveRadius,
+      OverlayStyle? overlayStyle}) {
     return PodProgressBarConfig(
       playingBarColor: playingBarColor ?? this.playingBarColor,
       bufferedBarColor: bufferedBarColor ?? this.bufferedBarColor,

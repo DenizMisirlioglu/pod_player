@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:visibility_detector/visibility_detector.dart';
-
 import 'package:pod_player/pod_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 void main(List<String> args) {
   PodVideoPlayer.enableLogs = true;
@@ -119,7 +118,7 @@ class VideoViewerState extends State<VideoViewer> {
                   children: [
                     ElevatedButton(
                       child: Text(
-                        options.isMute ? 'UnMute' : 'Mute',
+                        options.isMute ? 'Unmute' : 'Mute',
                       ),
                       onPressed: () {
                         widget.controller.toggleVolume();

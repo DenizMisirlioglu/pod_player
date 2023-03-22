@@ -6,7 +6,7 @@ class MaterialIconButton extends StatelessWidget {
     this.color,
     required this.child,
     this.radius = 12,
-    required this.toolTipMesg,
+    required this.toolTipMsg,
     this.onPressed,
     this.onHover,
     this.onTapDown,
@@ -15,7 +15,7 @@ class MaterialIconButton extends StatelessWidget {
   final Color? color;
   final Widget child;
   final double radius;
-  final String toolTipMesg;
+  final String toolTipMsg;
   final void Function()? onPressed;
   final void Function(bool)? onHover;
   final void Function(TapDownDetails details)? onTapDown;
@@ -25,8 +25,7 @@ class MaterialIconButton extends StatelessWidget {
       type: MaterialType.transparency,
       shape: const CircleBorder(),
       child: Tooltip(
-        message: toolTipMesg,
-        // textStyle: TextStyle(fontSize: 0.01),
+        message: toolTipMsg,
         child: InkWell(
           borderRadius: BorderRadius.circular(radius * 4),
           onHover: onHover,

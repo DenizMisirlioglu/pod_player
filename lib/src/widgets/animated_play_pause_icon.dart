@@ -25,14 +25,14 @@ class _AnimatedPlayPauseIconState extends State<_AnimatedPlayPauseIcon>
       vsync: this,
       duration: const Duration(milliseconds: 450),
     );
-    _podCtr.addListenerId('podVideoState', playPauseListner);
-    if (_podCtr.isvideoPlaying) {
+    _podCtr.addListenerId('podVideoState', playPauseListener);
+    if (_podCtr.isVideoPlaying) {
       if (mounted) _payCtr.forward();
     }
     super.initState();
   }
 
-  void playPauseListner() {
+  void playPauseListener() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (_podCtr.podVideoState == PodVideoState.playing) {
         if (mounted) _payCtr.forward();
@@ -60,7 +60,7 @@ class _AnimatedPlayPauseIconState extends State<_AnimatedPlayPauseIcon>
           tag: widget.tag,
           id: 'podVideoState',
           builder: (_f) => MaterialIconButton(
-            toolTipMesg: _f.isvideoPlaying
+            toolTipMsg: _f.isVideoPlaying
                 ? _podCtr.podPlayerLabels.pause ??
                     'Pause${kIsWeb ? ' (space)' : ''}'
                 : _podCtr.podPlayerLabels.play ??

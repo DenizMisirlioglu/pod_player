@@ -20,22 +20,32 @@ class _MobileBottomSheet extends StatelessWidget {
               title: _podCtr.podPlayerLabels.quality,
               icon: Icons.video_settings_rounded,
               subText: '${_podCtr.vimeoPlayingVideoQuality}p',
+              titleTextStyle: _podCtr.overlayStyle!.bottomsheetTitleTextStyle,
+              subTextStyle: _podCtr.overlayStyle!.bottomsheetSubTextStyle,
+              iconColor: _podCtr.overlayStyle!.bottomsheetIconColor,
               onTap: () {
                 Navigator.of(context).pop();
                 Timer(const Duration(milliseconds: 100), () {
                   showModalBottomSheet(
                     context: context,
+                    backgroundColor: Colors.transparent,
+                    barrierColor: _podCtr.overlayStyle!.bottomsheetBarrierColor,
                     builder: (context) => SafeArea(
-                      child: _VideoQualitySelectorMob(
-                        tag: tag,
-                        onTap: null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _podCtr.overlayStyle!.bottomsheetBackground ??
+                              Colors.white,
+                          borderRadius:
+                              _podCtr.overlayStyle!.bottomsheetBorderRadius,
+                        ),
+                        child: _VideoQualitySelectorMob(
+                          tag: tag,
+                          onTap: null,
+                        ),
                       ),
                     ),
                   );
                 });
-                // await Future.delayed(
-                //   const Duration(milliseconds: 100),
-                // );
               },
             ),
           _bottomSheetTiles(
@@ -44,6 +54,9 @@ class _MobileBottomSheet extends StatelessWidget {
             subText: _podCtr.isLooping
                 ? _podCtr.podPlayerLabels.optionEnabled
                 : _podCtr.podPlayerLabels.optionDisabled,
+            titleTextStyle: _podCtr.overlayStyle!.bottomsheetTitleTextStyle,
+            subTextStyle: _podCtr.overlayStyle!.bottomsheetSubTextStyle,
+            iconColor: _podCtr.overlayStyle!.bottomsheetIconColor,
             onTap: () {
               Navigator.of(context).pop();
               _podCtr.toggleLooping();
@@ -53,16 +66,29 @@ class _MobileBottomSheet extends StatelessWidget {
             title: _podCtr.podPlayerLabels.playbackSpeed,
             icon: Icons.slow_motion_video_rounded,
             subText: _podCtr.currentPaybackSpeed,
+            titleTextStyle: _podCtr.overlayStyle!.bottomsheetTitleTextStyle,
+            subTextStyle: _podCtr.overlayStyle!.bottomsheetSubTextStyle,
+            iconColor: _podCtr.overlayStyle!.bottomsheetIconColor,
             onTap: () {
               Navigator.of(context).pop();
               Timer(const Duration(milliseconds: 100), () {
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  barrierColor: _podCtr.overlayStyle!.bottomsheetBarrierColor,
                   builder: (context) => SafeArea(
-                    child: _VideoPlaybackSelectorMob(
-                      tag: tag,
-                      onTap: null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _podCtr.overlayStyle!.bottomsheetBackground ??
+                            Colors.white,
+                        borderRadius:
+                            _podCtr.overlayStyle!.bottomsheetBorderRadius,
+                      ),
+                      child: _VideoPlaybackSelectorMob(
+                        tag: tag,
+                        onTap: null,
+                      ),
                     ),
                   ),
                 );
@@ -79,9 +105,12 @@ class _MobileBottomSheet extends StatelessWidget {
     required IconData icon,
     String? subText,
     void Function()? onTap,
+    TextStyle? titleTextStyle,
+    TextStyle? subTextStyle,
+    Color? iconColor,
   }) {
     return ListTile(
-      leading: Icon(icon),
+      leading: Icon(icon, color: iconColor),
       onTap: onTap,
       title: FittedBox(
         fit: BoxFit.scaleDown,
@@ -90,6 +119,7 @@ class _MobileBottomSheet extends StatelessWidget {
           children: [
             Text(
               title,
+              style: titleTextStyle,
             ),
             if (subText != null) const SizedBox(width: 6),
             if (subText != null)
@@ -107,7 +137,7 @@ class _MobileBottomSheet extends StatelessWidget {
             if (subText != null)
               Text(
                 subText,
-                style: const TextStyle(color: Colors.grey),
+                style: subTextStyle ?? const TextStyle(color: Colors.grey),
               ),
           ],
         ),
@@ -135,7 +165,8 @@ class _VideoQualitySelectorMob extends StatelessWidget {
         children: _podCtr.vimeoOrVideoUrls
             .map(
               (e) => ListTile(
-                title: Text('${e.quality}p'),
+                title: Text('${e.quality}p',
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
                 onTap: () {
                   onTap != null ? onTap!() : Navigator.of(context).pop();
 
@@ -168,7 +199,8 @@ class _VideoPlaybackSelectorMob extends StatelessWidget {
         children: _podCtr.videoPlaybackSpeeds
             .map(
               (e) => ListTile(
-                title: Text(e),
+                title: Text(e,
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
                 onTap: () {
                   onTap != null ? onTap!() : Navigator.of(context).pop();
                   _podCtr.setVideoPlayBack(e);
@@ -181,10 +213,10 @@ class _VideoPlaybackSelectorMob extends StatelessWidget {
   }
 }
 
-class _MobileOverlayBottomControlles extends StatelessWidget {
+class _MobileOverlayBottomControllers extends StatelessWidget {
   final String tag;
 
-  const _MobileOverlayBottomControlles({
+  const _MobileOverlayBottomControllers({
     Key? key,
     required this.tag,
   }) : super(key: key);
@@ -226,8 +258,27 @@ class _MobileOverlayBottomControlles extends StatelessWidget {
                 },
               ),
               const Spacer(),
+              GetBuilder<PodGetXVideoController>(
+                tag: tag,
+                id: 'volume',
+                builder: (_podCtr) => MaterialIconButton(
+                  toolTipMsg: _podCtr.isMute
+                      ? _podCtr.podPlayerLabels.unmute ??
+                          'Unmute${kIsWeb ? ' (m)' : ''}'
+                      : _podCtr.podPlayerLabels.mute ??
+                          'Mute${kIsWeb ? ' (m)' : ''}',
+                  color: itemColor,
+                  onPressed: _podCtr.toggleMute,
+                  child: Icon(
+                    _podCtr.isMute
+                        ? Icons.volume_off_rounded
+                        : Icons.volume_up_rounded,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               MaterialIconButton(
-                toolTipMesg: _podCtr.isFullScreen
+                toolTipMsg: _podCtr.isFullScreen
                     ? _podCtr.podPlayerLabels.exitFullScreen ??
                         'Exit full screen${kIsWeb ? ' (f)' : ''}'
                     : _podCtr.podPlayerLabels.fullscreen ??

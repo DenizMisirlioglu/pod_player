@@ -24,7 +24,7 @@ class _WebSettingsDropdownState extends State<_WebSettingsDropdown> {
         tag: widget.tag,
         builder: (_podCtr) {
           return MaterialIconButton(
-            toolTipMesg: _podCtr.podPlayerLabels.settings,
+            toolTipMsg: _podCtr.podPlayerLabels.settings,
             color: Colors.white,
             child: const Icon(Icons.settings),
             onPressed: () => _podCtr.isFullScreen
@@ -101,7 +101,8 @@ class _WebSettingsDropdownState extends State<_WebSettingsDropdown> {
           .map(
             (e) => PopupMenuItem(
               child: ListTile(
-                title: Text(e),
+                title: Text(e,
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
               ),
               onTap: () {
                 _podCtr.setVideoPlayBack(e);
@@ -131,7 +132,8 @@ class _WebSettingsDropdownState extends State<_WebSettingsDropdown> {
           .map(
             (e) => PopupMenuItem(
               child: ListTile(
-                title: Text('${e.quality}p'),
+                title: Text('${e.quality}p',
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
               ),
               onTap: () {
                 _podCtr.changeVideoQuality(

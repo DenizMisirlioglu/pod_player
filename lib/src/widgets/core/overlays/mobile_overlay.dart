@@ -10,9 +10,9 @@ class _MobileOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _podCtr = Get.find<PodGetXVideoController>(tag: tag);
     const overlayColor = Colors.black38;
     const itemColor = Colors.white;
-    final _podCtr = Get.find<PodGetXVideoController>(tag: tag);
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -73,7 +73,7 @@ class _MobileOverlay extends StatelessWidget {
                 ),
               ),
               MaterialIconButton(
-                toolTipMesg: _podCtr.podPlayerLabels.settings,
+                toolTipMsg: _podCtr.podPlayerLabels.settings,
                 color: itemColor,
                 onPressed: () {
                   if (_podCtr.isOverlayVisible) {
@@ -91,7 +91,7 @@ class _MobileOverlay extends StatelessWidget {
         ),
         Align(
           alignment: Alignment.bottomLeft,
-          child: _MobileOverlayBottomControlles(tag: tag),
+          child: _MobileOverlayBottomControllers(tag: tag),
         ),
       ],
     );
@@ -116,9 +116,21 @@ class _MobileOverlay extends StatelessWidget {
   }
 
   void _bottomSheet(BuildContext context) {
+    final _podCtr = Get.find<PodGetXVideoController>(tag: tag);
+
     showModalBottomSheet(
       context: context,
-      builder: (context) => SafeArea(child: _MobileBottomSheet(tag: tag)),
+      backgroundColor: Colors.transparent,
+      barrierColor: _podCtr.overlayStyle!.bottomsheetBarrierColor,
+      builder: (context) => SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            color: _podCtr.overlayStyle!.bottomsheetBackground ?? Colors.white,
+            borderRadius: _podCtr.overlayStyle!.bottomsheetBorderRadius,
+          ),
+          child: _MobileBottomSheet(tag: tag),
+        ),
+      ),
     );
   }
 }

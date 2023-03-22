@@ -1,17 +1,17 @@
 import 'dart:developer';
 
-import 'package:pod_player/pod_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pod_player/pod_player.dart';
 
-class CustomVideoControlls extends StatefulWidget {
-  const CustomVideoControlls({Key? key}) : super(key: key);
+class CustomVideoControls extends StatefulWidget {
+  const CustomVideoControls({Key? key}) : super(key: key);
 
   @override
-  State<CustomVideoControlls> createState() => _CustomVideoControllsState();
+  State<CustomVideoControls> createState() => _CustomVideoControlsState();
 }
 
-class _CustomVideoControllsState extends State<CustomVideoControlls> {
+class _CustomVideoControlsState extends State<CustomVideoControls> {
   late PodPlayerController controller;
   bool? isVideoPlaying;
   final videoTextFieldCtr = TextEditingController(
@@ -45,11 +45,11 @@ class _CustomVideoControllsState extends State<CustomVideoControlls> {
           isVideoPlaying = controller.isVideoPlaying;
         });
       });
-    controller.addListener(_listner);
+    controller.addListener(_listener);
   }
 
-  ///Listnes to changes in video
-  void _listner() {
+  ///Listen for changes in video
+  void _listener() {
     if (controller.isVideoPlaying != isVideoPlaying) {
       isVideoPlaying = controller.isVideoPlaying;
     }
@@ -58,7 +58,7 @@ class _CustomVideoControllsState extends State<CustomVideoControlls> {
 
   @override
   void dispose() {
-    controller.removeListener(_listner);
+    controller.removeListener(_listener);
     controller.dispose();
     super.dispose();
   }
@@ -186,7 +186,7 @@ class _CustomVideoControllsState extends State<CustomVideoControlls> {
                     }),
                     sizeH20,
                     _iconButton(
-                        controller.isMute ? 'UnMute video' : 'mute video',
+                        controller.isMute ? 'Unmute video' : 'mute video',
                         controller.isMute ? Icons.volume_up : Icons.volume_off,
                         onPressed: () {
                       controller.toggleVolume();
@@ -257,11 +257,11 @@ class _CustomVideoControllsState extends State<CustomVideoControlls> {
               await controller.changeVideo(
                 playVideoFrom: PlayVideoFrom.vimeo(vimeoTextFieldCtr.text),
               );
-              controller.addListener(_listner);
+              controller.addListener(_listener);
               controller.onVideoQualityChanged(
                 () {
                   log('Vimeo video quality changed');
-                  controller.addListener(_listner);
+                  controller.addListener(_listener);
                 },
               );
               if (!mounted) return;
@@ -303,11 +303,11 @@ class _CustomVideoControllsState extends State<CustomVideoControlls> {
               await controller.changeVideo(
                 playVideoFrom: PlayVideoFrom.youtube(youtubeTextFieldCtr.text),
               );
-              controller.addListener(_listner);
+              controller.addListener(_listener);
               controller.onVideoQualityChanged(
                 () {
                   log('Youtube video quality changed');
-                  controller.addListener(_listner);
+                  controller.addListener(_listener);
                 },
               );
               if (!mounted) return;
@@ -349,7 +349,7 @@ class _CustomVideoControllsState extends State<CustomVideoControlls> {
               await controller.changeVideo(
                 playVideoFrom: PlayVideoFrom.network(videoTextFieldCtr.text),
               );
-              controller.addListener(_listner);
+              controller.addListener(_listener);
               if (!mounted) return;
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
             } catch (e) {

@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         '/fromNetwork': (context) => const PlayVideoFromNetwork(),
         '/fromNetworkQualityUrls': (context) =>
             const PlayVideoFromNetworkQualityUrls(),
-        '/customVideo': (context) => const CustomVideoControlls(),
+        '/customVideo': (context) => const CustomVideoControls(),
       },
       home: const MainPage(),
     );
