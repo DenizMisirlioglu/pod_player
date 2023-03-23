@@ -104,7 +104,7 @@ class PodPlayerController {
 
   PodVideoState get videoState => _ctr.podVideoState;
 
-  CachedVideoPlayerValue? get videoPlayerValue => _ctr.videoCtr?.value;
+  VideoPlayerValue? get videoPlayerValue => _ctr.videoCtr?.value;
 
   PodVideoPlayerType get videoPlayerType => _ctr.videoPlayerType;
 
