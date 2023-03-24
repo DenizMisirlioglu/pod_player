@@ -50,10 +50,14 @@ class _PodVideoController extends _PodUiController {
 
   Future<void> mute() async {
     await setVolume(0);
+    update(['volume']);
+    update(['update-all']);
   }
 
   Future<void> unMute() async {
     await setVolume(1);
+    update(['volume']);
+    update(['update-all']);
   }
 
   /// 0.0 is mute and 1.0 max volume.
