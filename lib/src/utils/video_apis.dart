@@ -19,15 +19,15 @@ class VideoApis {
       final response = await http.get(
         Uri.parse('https://player.vimeo.com/video/$videoId/config'),
       );
-      final Map<dynamic, dynamic> jsonData =
-          jsonDecode(response.body)['request']['files']['progressive'] as Map;
+      final jsonData =
+          jsonDecode(response.body)['request']['files']['progressive'];
       return List.generate(
         jsonData.length,
         (index) => VideoQualityUrls(
           quality: int.parse(
             (jsonData[index]['quality'] as String?)?.split('p').first ?? '0',
           ),
-          url: jsonData[index]['url'] as String,
+          url: jsonData[index]['url'],
         ),
       );
     } catch (error) {
@@ -52,7 +52,7 @@ class VideoApis {
         Uri.parse('https://api.vimeo.com/videos/$videoId'),
         headers: httpHeader,
       );
-      final Map<dynamic, dynamic> jsonData = jsonDecode(response.body)['files'] as Map;
+      final jsonData = jsonDecode(response.body)['files'];
 
       final List<VideoQualityUrls> list = [];
       for (int i = 0; i < jsonData.length; i++) {
@@ -60,7 +60,7 @@ class VideoApis {
             (jsonData[i]['rendition'] as String?)?.split('p').first ?? '0';
         final int? number = int.tryParse(quality);
         if (number != null && number != 0) {
-          list.add(VideoQualityUrls(quality: number, url: jsonData[i]['link'] as String));
+          list.add(VideoQualityUrls(quality: number, url: jsonData[i]['link']));
         }
       }
       return list;

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -169,7 +168,7 @@ class PodGetXVideoController extends _PodGesturesController {
 
         ///
         _videoCtr = VideoPlayerController.file(
-          playVideoFrom.file! as File,
+          playVideoFrom.file!,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
         );
