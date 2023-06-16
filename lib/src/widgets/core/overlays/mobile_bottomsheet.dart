@@ -166,7 +166,7 @@ class _VideoQualitySelectorMob extends StatelessWidget {
             .map(
               (e) => ListTile(
                 title: Text('${e.quality}p',
-                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle,),
                 onTap: () {
                   onTap != null ? onTap!() : Navigator.of(context).pop();
 
@@ -200,7 +200,7 @@ class _VideoPlaybackSelectorMob extends StatelessWidget {
             .map(
               (e) => ListTile(
                 title: Text(e,
-                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle,),
                 onTap: () {
                   onTap != null ? onTap!() : Navigator.of(context).pop();
                   _podCtr.setVideoPlayBack(e);

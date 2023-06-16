@@ -103,7 +103,7 @@ class PodProgressBarConfig {
       EdgeInsetsGeometry? padding,
       double? circleHandlerRadius,
       double? curveRadius,
-      OverlayStyle? overlayStyle}) {
+      OverlayStyle? overlayStyle,}) {
     return PodProgressBarConfig(
       playingBarColor: playingBarColor ?? this.playingBarColor,
       bufferedBarColor: bufferedBarColor ?? this.bufferedBarColor,

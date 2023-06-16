@@ -18,7 +18,6 @@ class _WebSettingsDropdownState extends State<_WebSettingsDropdown> {
     return Theme(
       data: Theme.of(context).copyWith(
         focusColor: Colors.white,
-        selectedRowColor: Colors.white,
       ),
       child: GetBuilder<PodGetXVideoController>(
         tag: widget.tag,
@@ -102,7 +101,7 @@ class _WebSettingsDropdownState extends State<_WebSettingsDropdown> {
             (e) => PopupMenuItem(
               child: ListTile(
                 title: Text(e,
-                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle,),
               ),
               onTap: () {
                 _podCtr.setVideoPlayBack(e);
@@ -133,7 +132,7 @@ class _WebSettingsDropdownState extends State<_WebSettingsDropdown> {
             (e) => PopupMenuItem(
               child: ListTile(
                 title: Text('${e.quality}p',
-                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle),
+                    style: _podCtr.overlayStyle!.bottomsheetTitleTextStyle,),
               ),
               onTap: () {
                 _podCtr.changeVideoQuality(
