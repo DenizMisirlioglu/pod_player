@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
-
 import '../models/vimeo_models.dart';
 
 String podErrorString(String val) {
@@ -12,24 +12,49 @@ String podErrorString(String val) {
 }
 
 class VideoApis {
-  static Future<List<VideoQualityUrls>?> getVimeoVideoQualityUrls(
-    String videoId,
-  ) async {
-    try {
-      final response = await http.get(
+  static Future<Response> _makeRequestHash(String videoId, String? hash) {
+    if (hash == null) {
+      return http.get(
         Uri.parse('https://player.vimeo.com/video/$videoId/config'),
       );
-      final jsonData =
-          jsonDecode(response.body)['request']['files']['progressive'];
-      return List.generate(
+    } else {
+      return http.get(
+        Uri.parse('https://player.vimeo.com/video/$videoId/config?h=$hash'),
+      );
+    }
+  }
+
+  static Future<List<VideoQualityUrls>?> getVimeoVideoQualityUrls(
+      String videoId,
+      String? hash,
+      ) async {
+    try {
+      final response = await _makeRequestHash(videoId, hash);
+      final jsonData = jsonDecode(response.body)['request']['files']
+      ['progressive'] as List<dynamic>;
+      final progressiveUrls = List.generate(
         jsonData.length,
-        (index) => VideoQualityUrls(
+            (index) => VideoQualityUrls(
           quality: int.parse(
             (jsonData[index]['quality'] as String?)?.split('p').first ?? '0',
           ),
-          url: jsonData[index]['url'],
+          url: jsonData[index]['url'] as String,
         ),
       );
+      if (progressiveUrls.isEmpty) {
+        final jsonRes =
+        jsonDecode(response.body)['request']['files']['hls']['cdns'];
+        for (final element in (jsonRes as Map).entries.toList()) {
+          progressiveUrls.add(
+            VideoQualityUrls(
+              quality: 720,
+              url: element.value['url'] as String,
+            ),
+          );
+          break;
+        }
+      }
+      return progressiveUrls;
     } catch (error) {
       if (error.toString().contains('XMLHttpRequest')) {
         log(
@@ -44,15 +69,15 @@ class VideoApis {
   }
 
   static Future<List<VideoQualityUrls>?> getVimeoPrivateVideoQualityUrls(
-    String videoId,
-    Map<String, String> httpHeader,
-  ) async {
+      String videoId,
+      Map<String, String> httpHeader,
+      ) async {
     try {
       final response = await http.get(
         Uri.parse('https://api.vimeo.com/videos/$videoId'),
         headers: httpHeader,
       );
-      final jsonData = jsonDecode(response.body)['files'];
+      final jsonData = jsonDecode(response.body)['files'] as List<dynamic>;
 
       final List<VideoQualityUrls> list = [];
       for (int i = 0; i < jsonData.length; i++) {
@@ -60,7 +85,12 @@ class VideoApis {
             (jsonData[i]['rendition'] as String?)?.split('p').first ?? '0';
         final int? number = int.tryParse(quality);
         if (number != null && number != 0) {
-          list.add(VideoQualityUrls(quality: number, url: jsonData[i]['link']));
+          list.add(
+            VideoQualityUrls(
+              quality: number,
+              url: jsonData[i]['link'] as String,
+            ),
+          );
         }
       }
       return list;
@@ -78,9 +108,9 @@ class VideoApis {
   }
 
   static Future<List<VideoQualityUrls>?> getYoutubeVideoQualityUrls(
-    String youtubeIdOrUrl,
-    bool live,
-  ) async {
+      String youtubeIdOrUrl,
+      bool live,
+      ) async {
     try {
       final yt = YoutubeExplode();
       final urls = <VideoQualityUrls>[];
@@ -96,10 +126,10 @@ class VideoApis {
         );
       } else {
         final manifest =
-            await yt.videos.streamsClient.getManifest(youtubeIdOrUrl);
+        await yt.videos.streamsClient.getManifest(youtubeIdOrUrl);
         urls.addAll(
           manifest.muxed.map(
-            (element) => VideoQualityUrls(
+                (element) => VideoQualityUrls(
               quality: int.parse(element.qualityLabel.split('p')[0]),
               url: element.url.toString(),
             ),

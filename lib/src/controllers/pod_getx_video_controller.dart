@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:universal_html/html.dart' as _html;
-import 'package:wakelock/wakelock.dart';
+import 'package:universal_html/html.dart' as uni_html;
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../pod_player.dart';
 import '../utils/logger.dart';
@@ -19,7 +19,7 @@ part 'pod_video_controller.dart';
 part 'pod_video_quality_controller.dart';
 
 class PodGetXVideoController extends _PodGesturesController {
-  ///main video player controller
+  ///main videoplayer controller
   VideoPlayerController? get videoCtr => _videoCtr;
 
   ///podVideoPlayer state notifier
@@ -60,7 +60,7 @@ class PodGetXVideoController extends _PodGesturesController {
       await _videoCtr?.initialize();
       _videoDuration = _videoCtr?.value.duration ?? Duration.zero;
       await setLooping(isLooping);
-      _videoCtr?.addListener(videoListener);
+      _videoCtr?.addListener(videoListner);
       addListenerId('podVideoState', podStateListner);
 
       checkAutoPlayVideo();
@@ -69,8 +69,8 @@ class PodGetXVideoController extends _PodGesturesController {
 
       update(['update-all']);
       // ignore: unawaited_futures
-      Future.delayed(const Duration(milliseconds: 600))
-          .then((value) => _isWebAutoPlayDone = true);
+      Future<void>.delayed(const Duration(milliseconds: 600))
+          .then((_) => _isWebAutoPlayDone = true);
     } catch (e) {
       podVideoStateChanger(PodVideoState.error);
       update(['errorState']);
@@ -84,9 +84,9 @@ class PodGetXVideoController extends _PodGesturesController {
     switch (_videoPlayerType) {
       case PodVideoPlayerType.network:
 
-        ///
-        _videoCtr = VideoPlayerController.network(
-          playVideoFrom.dataSource!,
+      ///
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(playVideoFrom.dataSource!),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
@@ -95,63 +95,66 @@ class PodGetXVideoController extends _PodGesturesController {
         playingVideoUrl = playVideoFrom.dataSource;
         break;
       case PodVideoPlayerType.networkQualityUrls:
-        final _url = await getUrlFromVideoQualityUrls(
+        final url = await getUrlFromVideoQualityUrls(
           qualityList: podPlayerConfig.videoQualityPriority,
           videoUrls: playVideoFrom.videoQualityUrls!,
         );
 
         ///
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
           httpHeaders: playVideoFrom.httpHeaders,
         );
-        playingVideoUrl = _url;
+        playingVideoUrl = url;
 
         break;
       case PodVideoPlayerType.youtube:
-        final _urls = await getVideoQualityUrlsFromYoutube(
+        final urls = await getVideoQualityUrlsFromYoutube(
           playVideoFrom.dataSource!,
           playVideoFrom.live,
         );
-        final _url = await getUrlFromVideoQualityUrls(
+        final url = await getUrlFromVideoQualityUrls(
           qualityList: podPlayerConfig.videoQualityPriority,
-          videoUrls: _urls,
+          videoUrls: urls,
         );
 
         ///
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
           httpHeaders: playVideoFrom.httpHeaders,
         );
-        playingVideoUrl = _url;
+        playingVideoUrl = url;
 
         break;
       case PodVideoPlayerType.vimeo:
-        await getQualityUrlsFromVimeoId(playVideoFrom.dataSource!);
-        final _url = await getUrlFromVideoQualityUrls(
+        await getQualityUrlsFromVimeoId(
+          playVideoFrom.dataSource!,
+          hash: playVideoFrom.hash,
+        );
+        final url = await getUrlFromVideoQualityUrls(
           qualityList: podPlayerConfig.videoQualityPriority,
           videoUrls: vimeoOrVideoUrls,
         );
 
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
           httpHeaders: playVideoFrom.httpHeaders,
         );
-        playingVideoUrl = _url;
+        playingVideoUrl = url;
 
         break;
       case PodVideoPlayerType.asset:
 
-        ///
+      ///
         _videoCtr = VideoPlayerController.asset(
           playVideoFrom.dataSource!,
           closedCaptionFile: playVideoFrom.closedCaptionFile,
@@ -179,19 +182,19 @@ class PodGetXVideoController extends _PodGesturesController {
           playVideoFrom.dataSource!,
           playVideoFrom.httpHeaders,
         );
-        final _url = await getUrlFromVideoQualityUrls(
+        final url = await getUrlFromVideoQualityUrls(
           qualityList: podPlayerConfig.videoQualityPriority,
           videoUrls: vimeoOrVideoUrls,
         );
 
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
           httpHeaders: playVideoFrom.httpHeaders,
         );
-        playingVideoUrl = _url;
+        playingVideoUrl = url;
 
         break;
     }
@@ -226,7 +229,7 @@ class PodGetXVideoController extends _PodGesturesController {
       }
       if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
         if (isFullScreen) {
-          _html.document.exitFullscreen();
+          uni_html.document.exitFullscreen();
           if (!isWebPopupOverlayOpen) {
             disableFullScreen(appContext, tag);
           }
@@ -239,12 +242,12 @@ class PodGetXVideoController extends _PodGesturesController {
 
   void toggleFullScreenOnWeb(BuildContext context, String tag) {
     if (isFullScreen) {
-      _html.document.exitFullscreen();
+      uni_html.document.exitFullscreen();
       if (!isWebPopupOverlayOpen) {
         disableFullScreen(context, tag);
       }
     } else {
-      _html.document.documentElement?.requestFullscreen();
+      uni_html.document.documentElement?.requestFullscreen();
       enableFullScreen(tag);
     }
   }
@@ -254,18 +257,18 @@ class PodGetXVideoController extends _PodGesturesController {
     podLog(_podVideoState.toString());
     switch (_podVideoState) {
       case PodVideoState.playing:
-        if (podPlayerConfig.wakelockEnabled) Wakelock.enable();
+        if (podPlayerConfig.wakelockEnabled) WakelockPlus.enable();
         playVideo(true);
         break;
       case PodVideoState.paused:
-        if (podPlayerConfig.wakelockEnabled) Wakelock.disable();
+        if (podPlayerConfig.wakelockEnabled) WakelockPlus.disable();
         playVideo(false);
         break;
       case PodVideoState.loading:
         isShowOverlay(true);
         break;
       case PodVideoState.error:
-        if (podPlayerConfig.wakelockEnabled) Wakelock.disable();
+        if (podPlayerConfig.wakelockEnabled) WakelockPlus.disable();
         playVideo(false);
         break;
     }
@@ -287,7 +290,7 @@ class PodGetXVideoController extends _PodGesturesController {
     required PlayVideoFrom playVideoFrom,
     required PodPlayerConfig playerConfig,
   }) async {
-    _videoCtr?.removeListener(videoListener);
+    _videoCtr?.removeListener(keyboardListener);
     podVideoStateChanger(PodVideoState.paused);
     podVideoStateChanger(PodVideoState.loading);
     keyboardFocusWeb?.removeListener(keyboardListener);

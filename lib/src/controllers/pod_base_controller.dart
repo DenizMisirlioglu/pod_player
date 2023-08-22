@@ -45,7 +45,7 @@ class _PodBaseController extends GetxController {
     }
     if (_videoCtr!.value.isInitialized) {
       _listenToVideoState();
-      _listneToVideoPosition();
+      _listenToVideoPosition();
       _listenToVolume();
       if (kIsWeb && autoPlay && isMute && !_isWebAutoPlayDone) _webAutoPlay();
     }
@@ -90,7 +90,7 @@ class _PodBaseController extends GetxController {
     }
   }
 
-  void _listneToVideoPosition() {
+  void _listenToVideoPosition() {
     if ((_videoCtr?.value.duration.inSeconds ?? Duration.zero.inSeconds) < 60) {
       _videoPosition = _videoCtr?.value.position ?? Duration.zero;
       update(['video-progress']);
