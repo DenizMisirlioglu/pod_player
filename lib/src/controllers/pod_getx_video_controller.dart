@@ -60,7 +60,7 @@ class PodGetXVideoController extends _PodGesturesController {
       await _videoCtr?.initialize();
       _videoDuration = _videoCtr?.value.duration ?? Duration.zero;
       await setLooping(isLooping);
-      _videoCtr?.addListener(videoListner);
+      _videoCtr?.addListener(videoListener);
       addListenerId('podVideoState', podStateListner);
 
       checkAutoPlayVideo();

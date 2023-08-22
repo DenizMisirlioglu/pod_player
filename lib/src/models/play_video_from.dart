@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import '../../pod_player.dart';
 
 class PlayVideoFrom {
   final String? dataSource;
+  final String? hash;
   final PodVideoPlayerType playerType;
   final VideoFormat? formatHint;
   final String? package;
-  final dynamic file;
+  final File? file;
   final List<VideoQualityUrls>? videoQualityUrls;
   final Future<ClosedCaptionFile>? closedCaptionFile;
   final VideoPlayerOptions? videoPlayerOptions;
@@ -13,9 +16,10 @@ class PlayVideoFrom {
   final bool live;
 
   const PlayVideoFrom._({
+    required this.playerType,
     this.live = false,
     this.dataSource,
-    required this.playerType,
+    this.hash,
     this.formatHint,
     this.package,
     this.file,
@@ -60,7 +64,7 @@ class PlayVideoFrom {
   ///File Doesnot support web apps
   ///[file] is `File` Datatype import it from `dart:io`
   factory PlayVideoFrom.file(
-    dynamic file, {
+    File file, {
     Future<ClosedCaptionFile>? closedCaptionFile,
     VideoPlayerOptions? videoPlayerOptions,
   }) {
@@ -74,6 +78,7 @@ class PlayVideoFrom {
 
   factory PlayVideoFrom.vimeo(
     String dataSource, {
+    String? hash,
     VideoFormat? formatHint,
     Future<ClosedCaptionFile>? closedCaptionFile,
     VideoPlayerOptions? videoPlayerOptions,
@@ -82,6 +87,7 @@ class PlayVideoFrom {
     return PlayVideoFrom._(
       playerType: PodVideoPlayerType.vimeo,
       dataSource: dataSource,
+      hash: hash,
       formatHint: formatHint,
       closedCaptionFile: closedCaptionFile,
       videoPlayerOptions: videoPlayerOptions,
